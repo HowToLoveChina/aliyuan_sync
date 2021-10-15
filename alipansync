@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 
 define('DEBUG',true);
@@ -15,6 +16,10 @@ function dir_comp($src, $dst, $r = false)
     while ($l = fgets($fp)) {
         $dirs = explode("\t", trim($l));
         foreach ($dirs as $path) {
+            if ($path == "/") {
+                //空目录会有这一项
+                continue;
+            }
             $dfile = $dst . "/" . $path;
             $n = strpos($path, ".");
             if ($r && $n === false) {
