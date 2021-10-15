@@ -1,0 +1,32 @@
+<?php
+
+define('DEBUG',true);
+
+dir_comp($argv[1], $argv[2], true);
+
+
+function dir_comp($src, $dst, $r = false)
+{
+   
+    DEBUG && printf("work@%s\n", $src);
+    $scmd = sprintf("aliyunpan ls \"%s\"", $src);
+
+    $fp = popen($scmd, "r");
+    while ($l = fgets($fp)) {
+        $dirs = explode("\t", trim($l));
+        foreach ($dirs as $path) {
+            $dfile = $dst . "/" . $path;
+            $n = strpos($path, ".");
+            if ($r && $n === false) {
+                dir_comp($src . "/" . $path, $dfile, true);
+            } else {
+                if (!file_exists($dfile)) {
+                    DEBUG && printf("##lost##  %s\n", $dfile);
+                    (!DEBUG) && printf("%s\n", $dfile);
+                }
+            }
+        }
+    }
+    pclose($fp);
+}
+
